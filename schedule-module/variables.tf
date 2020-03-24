@@ -2,11 +2,11 @@ variable "jenkins_instance_type" {
   default = "t3.small"
 }
 variable "jenkins_ami_id" {
-  default = "ami-0d847e65d96c3eebd"
+  default = "ami-054ea15034919700c"
 }
 variable "start_schedule_expression" {
-  default = "cron(0 8 * * ? *)"
+  default = "cron(6 * * * ? *)"
 }
-variable "shutdown_schedule_expression" {
-  default = "cron(0 16 * * ? *)"
+variable "stop_schedule_expression" {
+  default = "cron(18 * * * ? *)"
 }
