@@ -5,8 +5,8 @@ variable "jenkins_ami_id" {
   default = "ami-054ea15034919700c"
 }
 variable "start_schedule_expression" {
-  default = "cron(6 * * * ? *)"
+  default = "cron(0 8 ? * MON-FRI *)"
 }
 variable "stop_schedule_expression" {
-  default = "cron(18 * * * ? *)"
+  default = "cron(0 16 ? * MON-FRI *)"
 }
