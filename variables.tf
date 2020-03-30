@@ -10,3 +10,6 @@ variable "start_schedule_expression" {
 variable "stop_schedule_expression" {
   default = "cron(0 15 ? * MON-FRI *)"
 }
+variable "asume_role_jenkins" {
+  default = null
+}
