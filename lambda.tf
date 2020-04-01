@@ -17,9 +17,14 @@ resource "aws_lambda_function" "scheduler_lambda" {
   source_code_hash = data.archive_file.aws-scheduler.output_base64sha256
   environment {
     variables = {
-      INSTANCE_ID     = aws_instance.jenkins.id
+      START_TAG       = var.START_TAG
+      STOP_TAG        = var.STOP_TAG
       START_EVENT_ARN = aws_cloudwatch_event_rule.schedule-instance-start.arn
       STOP_EVENT_ARN  = aws_cloudwatch_event_rule.schedule-instance-stop.arn
     }
+  }
+  vpc_config {
+    subnet_ids         = var.SUBNET_IDS
+    security_group_ids = var.SECURITY_GROUP_IDS
   }
 }
