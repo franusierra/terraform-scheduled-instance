@@ -11,10 +11,10 @@ variable "START_TAG" {
   default = "START_ME"
 }
 variable "SUBNET_IDS" {
-  default = null
+  default = []
 }
 variable "SECURITY_GROUP_IDS" {
-  default = null
+  default = []
 }
 variable "PREFIX" {
   default = "dev-"
