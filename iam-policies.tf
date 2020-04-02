@@ -16,13 +16,11 @@ data "aws_iam_policy_document" "lambda_policies" {
     sid = "1"
 
     actions = [
-      "ec2:Start*",
-      "ec2:Stop*"
-
+      "ec2:*"
     ]
 
     resources = [
-      aws_instance.jenkins.arn
+      "*"
     ]
   }
 
@@ -32,7 +30,7 @@ resource aws_iam_role_policy_attachment basic {
   role       = aws_iam_role.schedule_lambda_role.name
 }
 resource "aws_iam_role" "schedule_lambda_role" {
-  name               = "schedule_lambda_role"
+  name               = "${var.PREFIX}schedule_lambda_role"
   assume_role_policy = data.aws_iam_policy_document.lambda_role_assume.json
 
 }
