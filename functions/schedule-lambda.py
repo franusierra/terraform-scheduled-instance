@@ -1,8 +1,8 @@
 import boto3
 import os
 region = 'eu-west-1'
-ec2 = boto3.client('ec2', region_name=region)
-
+session = boto3.Session(region_name=region)
+ec2 = session.resource('ec2', region)
 def handler(event, context):
     print(event)
     start_event_arn=os.environ["START_EVENT_ARN"]
@@ -10,38 +10,36 @@ def handler(event, context):
     event_arn=event["resources"][0]
     if event_arn==stop_event_arn:
         filters = [{
-         'Name': f'tag:{os.environ["STOP_TAG"]}:',
-         'Values': ['true']
+            'Name': f'tag:{os.environ["STOP_TAG"]}',
+            'Values': ['true']
+        },
+        {
+            'Name': 'instance-state-name',
+            'Values': ['running']
+
         }]
-        instances = ec2.describe_instances(Filters=filters)['Reservations']['Instances']
-        print(f'Stopping {len(instances)} instances...')
-        for instance in instances:
-            if instance['Status']['Name']=='running':
-                instance_id=instance['InstanceId']
-                print(f'Stopping {instance_id}...')
-                ec2.stop_instances(InstanceIds=[instance_id])
-            else:
-                print(f'{instance_id} is not running.')
+        instances = ec2.instances.filter(Filters=filters)
+        ilist = [instance for instance in instances]
+        print(f'Stopping the {len(ilist)} instances')
+        instances.stop()
         return {
             'status': 200,
             'message': "Instances stopped"
         }
     if event_arn==start_event_arn:
         filters = [{
-         'Name': f'tag:{os.environ["START_TAG"]}:',
-         'Values': ['true']
-        }]
-        instances = ec2.describe_instances(Filters=filters)['Reservations']['Instances']
-        print(f'Starting {len(instances)} instances...')
-        for instance in instances:
-            if instance['Status']['Name']!='running':
-                instance_id=instance['InstanceId']
-                print(f'Starting {instance_id}...')
-                ec2.start_instances(InstanceIds=[instance_id])
-            else:
-                print(f'{instance_id} is already running.')
-        print("Starting the instance")
+            'Name': f'tag:{os.environ["START_TAG"]}',
+            'Values': ['true']
+        },
+        {
+            'Name': 'instance-state-name',
+            'Values': ['stopped']
 
+        }]
+        instances = ec2.instances.filter(Filters=filters)
+        ilist = [instance for instance in instances]
+        print(f'Starting the {len(ilist)} instances')
+        instances.start()
         return {
             'status' : 200,
             'message' : "Instances started"
